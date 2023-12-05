@@ -61,8 +61,12 @@ def index():
 	return PAGE_TEMPLATE.format(title=APP_NAME, content='<p>To use this service, change any GitHub or GitLab repository URL so that the domain is gitrls.com instead of github.com or gitlab.com.')
 
 
-@app.route('/<string:owner>/<string:repo>')
-def latestReleaseAssets(owner, repo):
+@app.route('/<string:owner>/<string:repo>', defaults={'overflow': ''})
+@app.route('/<string:owner>/<string:repo>/<path:overflow>')
+def latestReleaseAssets(owner, repo, overflow):
+	if overflow:
+		return flask.redirect(flask.url_for('latestReleaseAssets', owner=owner, repo=repo))
+
 	release = getLatestRelease(httpSession, owner, repo)
 	if not release['assets']:
 		return flask.abort(404)
@@ -77,5 +81,3 @@ def latestReleaseAssets(owner, repo):
 			content += f'<li><a href="{asset["browser_download_url"]}">{asset["name"]}</a></li>'
 		content += '</ul>'
 		return PAGE_TEMPLATE.format(title=title, content=content)
-
-	
