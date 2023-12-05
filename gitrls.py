@@ -8,25 +8,7 @@ APP_NAME = 'GitRLS'
 APP_VERSION = 0.1
 LATEST_RELEASE_URL = 'https://api.github.com/repos/{owner}/{repo}/releases/latest'
 CACHE_DIR = '.web_cache'
-
-PAGE_TEMPLATE = '''
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>{title}</title>
-		<style>
-			ul {{
-				list-style-type: none;
-			}}
-		</style>
-	</head>
-	<body>
-		<h1>{title}</h1>
-		{content}
-	</body>
-</html>
-'''
+TEMPLATE_FILENAME = 'gitrls.html'
 
 
 app = flask.Flask(__name__)
@@ -58,7 +40,7 @@ def getLatestRelease(session, owner, repo):
 
 @app.route("/")
 def index():
-	return PAGE_TEMPLATE.format(title=APP_NAME, content='<p>To use this service, change any GitHub or GitLab repository URL so that the domain is gitrls.com instead of github.com or gitlab.com.')
+	return flask.render_template(TEMPLATE_FILENAME, title=APP_NAME, message='To use this service, change any GitHub or GitLab repository URL so that the domain is gitrls.com instead of github.com or gitlab.com.')
 
 
 @app.route('/<string:owner>/<string:repo>', defaults={'overflow': ''})
@@ -75,9 +57,4 @@ def latestReleaseAssets(owner, repo, overflow):
 	if len(assets) == 1:
 		return flask.redirect(assets[0]['browser_download_url'], 303)
 	else:
-		title = release['name']
-		content = '<ul>\n'
-		for asset in assets:
-			content += f'<li><a href="{asset["browser_download_url"]}">{asset["name"]}</a></li>'
-		content += '</ul>'
-		return PAGE_TEMPLATE.format(title=title, content=content)
+		return flask.render_template(TEMPLATE_FILENAME, title=release['name'], assets=[{'name': a['name'], 'url': a['browser_download_url']} for a in assets])

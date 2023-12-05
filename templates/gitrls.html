@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>{{ title }}</title>
+		<style>
+			ul {
+				list-style-type: none;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>{{ title }}</h1>
+		{% if message %}
+			<p>{{ message }}</p>
+		{% endif %}
+
+		{% if assets %}
+			<ul>
+				{% for asset in assets %}
+					<li><a href="{{ asset.url }}">{{ asset.name }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</body>
+</html>
