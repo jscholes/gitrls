@@ -40,7 +40,7 @@ def getLatestRelease(session, owner, repo):
 
 @app.route("/")
 def index():
-	return flask.render_template(TEMPLATE_FILENAME, title=APP_NAME, message='To use this service, change any GitHub or GitLab repository URL so that the domain is gitrls.com instead of github.com or gitlab.com.')
+	return flask.render_template(TEMPLATE_FILENAME, title=APP_NAME, message='To use this service, change any GitHub repository URL so that the domain is gitrls.com instead of github.com.')
 
 
 @app.route('/<string:owner>/<string:repo>', defaults={'overflow': ''})
